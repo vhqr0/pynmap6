@@ -33,19 +33,22 @@ class PortScanner:
         self.exc = None
         self.results = []
 
-    def parse(self):
+    def parse(self) -> List[Tuple[str, int, str]]:
         results = []
         if self.exc:
             raise self.exc
         for buf in self.results:
             pkt = sp.Ether(buf)
-            if sp.TCP not in pkt:
+            if sp.IPv6 not in pkt:
                 continue
-            tcppkt = pkt[sp.TCP]
+            ippkt = pkt[sp.IPv6]
+            if sp.TCP not in ippkt:
+                continue
+            tcppkt = ippkt[sp.TCP]
             if 'R' in tcppkt.flags:
-                results.append((tcppkt.src, 'close'))
+                results.append((ippkt.src, tcppkt.sport, 'close'))
             elif 'S' in tcppkt.flags and 'A' in tcppkt.flags:
-                results.append((tcppkt.src, 'open'))
+                results.append((ippkt.src, tcppkt.sport, 'open'))
         return results
 
     def run(self):
@@ -82,13 +85,10 @@ class PortScanner:
 
     def receiver(self):
         sniffer = pcap.pcap(name=self.iface, promisc=False, timeout_ms=1)
-        sniffer.setfilter(f'tcp dst port {self.port}')
+        sniffer.setfilter(f'ip6 tcp and tcp dst port {self.port}')
         sniffer.setdirection(pcap.PCAP_D_IN)
         sniffer.setnonblock()
         while not self.done:
             rlist, _, _ = select.select([sniffer.fd], [], [], 1)
             if rlist:
-                sniffer.dispatch(1, self.receive_callback)
-
-    def receive_callback(self, ts, pkt, *args):
-        self.results.append(pkt)
+                sniffer.dispatch(1, lambda ts, pkt: self.results.append(pkt))
