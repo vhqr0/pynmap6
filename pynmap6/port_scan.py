@@ -52,17 +52,20 @@ class PortScanner:
 
     def sender(self):
         for target in self.targets:
-            if sp.conf.route6.route(target[0])[0] != self.iface:
+            iface, nexthop, src = sp.conf.route6.route(target[0])
+            if iface != self.iface:
                 self.logger.warning('target to other iface: %s', target)
                 continue
-            pkt = sp.IPv6(dst=target[0]) / \
+            pkt = sp.Ether(src=sp.get_if_hwaddr(self.iface),
+                           dst=sp.getmacbyip6(nexthop)) / \
+                sp.IPv6(src=src, dst=target[0]) / \
                 sp.TCP(sport=self.port,
                        dport=target[1],
                        seq=random.getrandbits(32),
                        flags='S',
                        window=1024,
                        options=[('MSS', 1460)])
-            sp.send(pkt, verbose=0)  # auto add eth header
+            sp.sendp(pkt, verbose=0, iface=self.iface)
             time.sleep(self.interval)
 
     def receiver(self):

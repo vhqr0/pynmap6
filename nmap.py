@@ -11,7 +11,10 @@ args = parser.parse_args()
 target = args.target
 ports = (int(port) for port in args.port.split(','))
 
-ai = socket.getaddrinfo(target, 0, family=socket.AF_INET6, type=socket.SOCK_DGRAM)
+ai = socket.getaddrinfo(host=target,
+                        port=0,
+                        family=socket.AF_INET6,
+                        type=socket.SOCK_DGRAM)
 
 if not ai:
     raise RuntimeError('resolve failed')
