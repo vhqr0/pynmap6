@@ -58,8 +58,10 @@ class PortScanner:
             pkt = sp.IPv6(dst=target[0]) / \
                 sp.TCP(sport=self.port,
                        dport=target[1],
+                       seq=random.getrandbits(32),
                        flags='S',
-                       seq=random.getrandbits(32))
+                       window=1024,
+                       options=[('MSS', 1460)])
             sp.send(pkt, verbose=0)  # auto add eth header
             time.sleep(self.interval)
 
