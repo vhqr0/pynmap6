@@ -56,7 +56,10 @@ class PortScanner:
                 self.logger.warning('target to other iface: %s', target)
                 continue
             pkt = sp.IPv6(dst=target[0]) / \
-                sp.TCP(sport=self.port, dport=target[1], flags='S')
+                sp.TCP(sport=self.port,
+                       dport=target[1],
+                       flags='S',
+                       seq=random.getrandbits(32))
             sp.send(pkt, verbose=0)  # auto add eth header
             time.sleep(self.interval)
 
