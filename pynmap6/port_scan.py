@@ -13,6 +13,7 @@ class PortScanner:
     targets: Generator[Tuple[str, int], None, None]
     port: int
     iface: str
+    interval: float
     done: bool
     exc: Optional[Exception]
     results: List[bytes]
@@ -21,11 +22,14 @@ class PortScanner:
 
     def __init__(self,
                  targets: Generator[Tuple[str, int], None, None],
-                 iface: Optional[str] = None):
+                 iface: Optional[str] = None,
+                 interval: float = 1.0):
         self.targets = targets
         self.port = random.getrandbits(16)
         self.iface = iface if iface else str(sp.conf.iface)
+        self.interval = interval
         self.done = False
+        self.exc = None
         self.results = []
 
     def run(self):
