@@ -1,3 +1,4 @@
+import time
 import random
 import select
 import threading
@@ -57,6 +58,7 @@ class PortScanner:
             pkt = sp.IPv6(dst=target[0]) / \
                 sp.TCP(sport=self.port, dport=target[1], flags='S')
             sp.send(pkt, verbose=0)  # auto add eth header
+            time.sleep(self.interval)
 
     def receiver(self):
         sniffer = pcap.pcap(name=self.iface, promisc=False, timeout_ms=1)
