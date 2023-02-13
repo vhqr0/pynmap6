@@ -1,37 +1,25 @@
-import socket
 import pprint
 import argparse
 
 import scapy.all as sp
 
 from pynmap6.port_scan import PortScanner
+from pynmap6.target_generate import TargetGenerator
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-i', '--iface', default=sp.conf.iface)
-parser.add_argument('-p', '--port', default='22,80,443')
-parser.add_argument('target')
+parser.add_argument('-p', '--ports', default='22,80,443')
+parser.add_argument('addrs', nargs=argparse.REMAINDER)
 args = parser.parse_args()
 
 iface = args.iface
-target = args.target
-ports = (int(port) for port in args.port.split(','))
+ports = args.ports.split(',')
+addrs = args.addrs
 
-ai = socket.getaddrinfo(host=target,
-                        port=0,
-                        family=socket.AF_INET6,
-                        type=socket.SOCK_DGRAM)
-
-if not ai:
-    raise RuntimeError('resolve failed')
-
-target = ai[0][-1][0]
-
-targets = ((target, port) for port in ports)
-
+targets = TargetGenerator(addrs, ports).new()
 scanner = PortScanner(targets, iface=iface)
 
 scanner.run()
-
 results = scanner.parse()
 
 pprint.pprint(results)
