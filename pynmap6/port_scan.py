@@ -33,6 +33,21 @@ class PortScanner:
         self.exc = None
         self.results = []
 
+    def parse(self):
+        results = []
+        if self.exc:
+            raise self.exc
+        for buf in self.results:
+            pkt = sp.Ether(buf)
+            if sp.TCP not in pkt:
+                continue
+            tcppkt = pkt[sp.TCP]
+            if 'R' in tcppkt.flags:
+                results.append((tcppkt.src, 'close'))
+            elif 'S' in tcppkt.flags and 'A' in tcppkt.flags:
+                results.append((tcppkt.src, 'open'))
+        return results
+
     def run(self):
         self.done = False
         self.exc = None
