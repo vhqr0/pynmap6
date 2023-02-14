@@ -18,7 +18,10 @@ def os_scan(ctx: OSScanCtx) -> Mapping[str, str]:
             scanner = scanner_cls(ctx)
             scanner.run()
             fp = scanner.parse()
-            results[name] = base64.b64encode(fp).decode()
+            if fp:
+                results[name] = base64.b64encode(fp).decode()
+            else:
+                raise ValueError('no finger print')
         except Exception as e:
             OSBasicScanner.logger.error('except while os scanning %s', e)
     return results
