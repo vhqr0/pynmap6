@@ -25,7 +25,7 @@ ctx = OSScanCtx(target,
                 timewait=timewait,
                 interval=interval)
 
-results = os_scan.scan(ctx)
+results = os_scan(ctx)
 
 for name, fp in results.items():
     print('{}({})'.format(name, fp))
