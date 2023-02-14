@@ -1,23 +1,16 @@
-import time
 import random
-import select
-import threading
 import logging
 
-import pcap
 import scapy.all as sp
 
 from typing import Optional, Generator, Tuple, List
 
+from .basic_scan import StatelessScanner
 
-class PortScanner:
+
+class PortScanner(StatelessScanner):
     targets: Generator[Tuple[str, int], None, None]
     port: int
-    iface: str
-    interval: float
-    done: bool
-    exc: Optional[Exception]
-    results: List[bytes]
 
     logger = logging.getLogger('port_scanner')
 
@@ -27,68 +20,43 @@ class PortScanner:
                  interval: float = 1.0):
         self.targets = targets
         self.port = random.getrandbits(16)
-        self.iface = iface if iface else str(sp.conf.iface)
-        self.interval = interval
-        self.done = False
-        self.exc = None
-        self.results = []
+        super().__init__(filter=self.gen_filter(),
+                         pkts=self.gen_pkts(),
+                         iface=iface,
+                         interval=interval)
 
     def parse(self) -> List[Tuple[str, int, str]]:
-        results = []
         if self.exc:
             raise self.exc
-        for buf in self.results:
-            pkt = sp.Ether(buf)
-            if sp.IPv6 not in pkt:
-                continue
-            ippkt = pkt[sp.IPv6]
-            if sp.TCP not in ippkt:
-                continue
-            tcppkt = ippkt[sp.TCP]
-            if 'R' in tcppkt.flags:
-                results.append((ippkt.src, tcppkt.sport, 'close'))
-            elif 'S' in tcppkt.flags and 'A' in tcppkt.flags:
-                results.append((ippkt.src, tcppkt.sport, 'open'))
-        return results
+        results = [self.parse1(buf) for buf in self.results]
+        return [result for result in results if result is not None]
 
-    def run(self):
-        self.done = False
-        self.exc = None
-        self.results = []
-
-        receiver = threading.Thread(target=self.receiver)
-        receiver.start()
-
+    def parse1(self, buf) -> Tuple[str, int, str]:
         try:
-            self.sender()
+            pkt = sp.Ether(buf)
+            ippkt = pkt[sp.IPv6]
+            tcppkt = ippkt[sp.TCP]
+            flags = tcppkt.flags
+            if 'R' in flags:
+                return ippkt.src, tcppkt.sport, 'close'
+            if 'S' in flags and 'A' in flags:
+                return ippkt.src, tcppkt.sport, 'open'
+            raise ValueError('invalid tcp flags')
         except Exception as e:
-            self.exc = e
-            self.logger.error('sender except: %s', e)
-        finally:
-            self.done = True
-            receiver.join()
+            self.logger.warning('except while parsing: %s', e)
 
-    def sender(self):
-        for target in self.targets:
-            if sp.conf.route6.route(target[0])[0] != self.iface:
-                self.logger.warning('target to other iface: %s', target)
-                continue
-            pkt = sp.IPv6(dst=target[0]) / \
-                sp.TCP(sport=self.port,
-                       dport=target[1],
-                       seq=random.getrandbits(32),
-                       flags='S',
-                       window=1024,
-                       options=[('MSS', 1460)])
-            sp.send(pkt, iface=self.iface, verbose=0)
-            time.sleep(self.interval)
+    def gen_filter(self) -> str:
+        return f'ip6 and tcp dst port {self.port}'
 
-    def receiver(self):
-        sniffer = pcap.pcap(name=self.iface, promisc=False, timeout_ms=1)
-        sniffer.setfilter(f'ip6 and tcp dst port {self.port}')
-        sniffer.setdirection(pcap.PCAP_D_IN)
-        sniffer.setnonblock()
-        while not self.done:
-            rlist, _, _ = select.select([sniffer.fd], [], [], 1)
-            if rlist:
-                sniffer.dispatch(1, lambda ts, pkt: self.results.append(pkt))
+    def gen_pkts(self) -> Generator[Tuple[str, sp.Packet], None, None]:
+        return (self.gen_pkt(target) for target in self.targets)
+
+    def gen_pkt(self, target: Tuple[str, int]) -> Tuple[str, sp.Packet]:
+        pkt = sp.IPv6(dst=target[0]) / \
+            sp.TCP(sport=self.port,
+                   dport=target[1],
+                   seq=random.getrandbits(32),
+                   flags='S',
+                   window=1024,
+                   options=[('MSS', 1460)])
+        return target[0], pkt

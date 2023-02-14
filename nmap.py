@@ -20,7 +20,7 @@ interval = args.interval
 
 sp.conf.iface = iface
 
-targets = TargetGenerator(addrs, ports).new()
+targets = TargetGenerator(addrs, ports).gen_targets()
 scanner = PortScanner(targets, interval=interval)
 
 scanner.run()
