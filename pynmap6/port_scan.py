@@ -80,7 +80,7 @@ class PortScanner:
                        flags='S',
                        window=1024,
                        options=[('MSS', 1460)])
-            sp.send(pkt, verbose=0)  # auto add eth header
+            sp.send(pkt, iface=self.iface, verbose=0)
             time.sleep(self.interval)
 
     def receiver(self):
