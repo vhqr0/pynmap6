@@ -12,6 +12,7 @@ from typing import Optional, List, Mapping
 
 class IEScanner:
     target: str
+    ieid: int
     iface: str
     done: bool
     exc: Optional[Exception]
@@ -25,7 +26,6 @@ class IEScanner:
                  interval: float = 1.0):
         self.target = target
         self.ieid = random.getrandbits(16)
-        self.ieseq = random.getrandbits(16)
         self.iface = iface if iface else sp.conf.iface
         self.interval = interval
         self.done = False
@@ -77,7 +77,7 @@ class IEScanner:
         pkt = sp.IPv6(dst=self.target) / \
             sp.ICMPv6EchoRequest(code=9,
                                  id=self.ieid,
-                                 seq=self.ieseq,
+                                 seq=random.getrandbits(16),
                                  data=(b'\x00' * 120))
         sp.send(pkt, iface=self.iface, verbose=0)
         time.sleep(self.interval)
@@ -87,7 +87,7 @@ class IEScanner:
             sp.IPv6ExtHdrHopByHop(
                 options=[sp.PadN(optdata=(b'\x00' * 4))]) / \
             sp.ICMPv6EchoRequest(id=self.ieid,
-                                 seq=self.ieseq,
+                                 seq=random.getrandbits(16),
                                  data=(b'\x00' * 120))
         sp.send(pkt, iface=self.iface, verbose=0)
         time.sleep(self.interval)
@@ -97,14 +97,10 @@ class IEScanner:
         sniffer.setfilter(
             'ip6 src {} and '
             '('
-            ' ('
-            '  icmp6[icmp6type]==icmp6-echoreply and'
-            '  icmp6[4:2]=={} and '
-            '  icmp6[6:2]=={}'
-            ' ) or '
+            ' (icmp6[icmp6type]==icmp6-echoreply and icmp6[4:2]=={}) or '
             # Notice: icmpv6 parameter problem need deeper analysis
             ' icmp6[icmp6type]==icmp6-parameterproblem'
-            ')'.format(self.target, self.ieid, self.ieseq))
+            ')'.format(self.target, self.ieid))
         sniffer.setdirection(pcap.PCAP_D_IN)
         sniffer.setnonblock()
         while not self.done:
