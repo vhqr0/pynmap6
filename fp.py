@@ -23,8 +23,7 @@ sp.conf.iface = iface
 ctx = OSScanCtx(target,
                 retry=retry,
                 timewait=timewait,
-                interval=interval,
-                target=target)
+                interval=interval)
 
 results = os_scan.scan(ctx)
 
