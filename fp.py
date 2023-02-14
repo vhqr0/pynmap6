@@ -2,7 +2,7 @@ import argparse
 
 import scapy.all as sp
 
-from pynmap6.os_scan.os_scan import os_scan, OSScanCtx
+from pynmap6.os_scan.os_scan import os_scan
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-i', '--iface', default=str(sp.conf.iface))
@@ -20,12 +20,7 @@ target = args.target
 
 sp.conf.iface = iface
 
-ctx = OSScanCtx(target,
-                retry=retry,
-                timewait=timewait,
-                interval=interval)
-
-results = os_scan(ctx)
+results = os_scan(target, retry=retry, timewait=timewait, interval=interval)
 
 for name, fp in results.items():
     print('{}({})'.format(name, fp))
