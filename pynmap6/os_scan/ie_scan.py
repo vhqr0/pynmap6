@@ -86,6 +86,11 @@ class IEScanner:
         pkt = sp.IPv6(dst=self.target) / \
             sp.IPv6ExtHdrHopByHop(
                 options=[sp.PadN(optdata=(b'\x00' * 4))]) / \
+            sp.IPv6ExtHdrDestOpt(
+                options=[sp.PadN(optdata=(b'\x00' * 4))]) / \
+            sp.IPv6ExtHdrRouting() / \
+            sp.IPv6ExtHdrHopByHop(
+                options=[sp.PadN(optdata=(b'\x00' * 4))]) / \
             sp.ICMPv6EchoRequest(id=self.ieid,
                                  seq=random.getrandbits(16),
                                  data=(b'\x00' * 120))
