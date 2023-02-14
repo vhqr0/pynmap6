@@ -20,18 +20,18 @@ class PortScanner(StatelessScanner):
                  interval: float = 1.0):
         self.targets = targets
         self.port = random.getrandbits(16)
-        super().__init__(filter=self.gen_filter(),
-                         pkts=self.gen_pkts(),
+        super().__init__(filter=self.get_filter(),
+                         pkts=self.get_pkts(),
                          iface=iface,
                          interval=interval)
 
     def parse(self) -> List[Tuple[str, int, str]]:
         if self.exc:
             raise self.exc
-        results = [self.parse1(buf) for buf in self.results]
+        results = [self.parse_1(buf) for buf in self.results]
         return [result for result in results if result is not None]
 
-    def parse1(self, buf) -> Tuple[str, int, str]:
+    def parse_1(self, buf) -> Tuple[str, int, str]:
         try:
             pkt = sp.Ether(buf)
             ippkt = pkt[sp.IPv6]
@@ -45,13 +45,13 @@ class PortScanner(StatelessScanner):
         except Exception as e:
             self.logger.warning('except while parsing: %s', e)
 
-    def gen_filter(self) -> str:
+    def get_filter(self) -> str:
         return f'ip6 and tcp dst port {self.port}'
 
-    def gen_pkts(self) -> Generator[Tuple[str, sp.Packet], None, None]:
-        return (self.gen_pkt(target) for target in self.targets)
+    def get_pkts(self) -> Generator[Tuple[str, sp.Packet], None, None]:
+        return (self.get_pkt(target) for target in self.targets)
 
-    def gen_pkt(self, target: Tuple[str, int]) -> Tuple[str, sp.Packet]:
+    def get_pkt(self, target: Tuple[str, int]) -> Tuple[str, sp.Packet]:
         pkt = sp.IPv6(dst=target[0]) / \
             sp.TCP(sport=self.port,
                    dport=target[1],

@@ -45,7 +45,7 @@ class BasicScanner:
             receiver.join()
 
     def sender(self):
-        raise NotImplementedError('BasicScanner.sender is not implemented')
+        raise NotImplementedError
 
     def send(self, dst: str, pkt: sp.Packet):
         if sp.conf.route6.route(dst)[0] != self.iface:
