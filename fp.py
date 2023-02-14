@@ -23,4 +23,4 @@ sp.conf.iface = iface
 results = os_scan(target, retry=retry, timewait=timewait, interval=interval)
 
 for name, fp in results.items():
-    print('{}({})'.format(name, fp))
+    print('{}\t{}'.format(name, fp))

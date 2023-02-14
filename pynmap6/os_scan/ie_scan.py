@@ -21,8 +21,6 @@ class IE1Scanner(OSBasicScanner):
         super().__init__(ctx)
 
     def parse(self) -> Optional[bytes]:
-        if self.exc:
-            raise self.exc
         if self.results:
             pkt = sp.Ether(self.results[0])
             ippkt = pkt[sp.IPv6]
@@ -59,8 +57,6 @@ class IE2Scanner(OSBasicScanner):
         super().__init__(ctx)
 
     def parse(self) -> Optional[bytes]:
-        if self.exc:
-            raise self.exc
         for buf in self.results:
             pkt = sp.Ether(buf)
             ippkt = pkt[sp.IPv6]

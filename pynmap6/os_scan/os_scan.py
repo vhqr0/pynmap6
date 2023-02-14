@@ -4,10 +4,12 @@ from typing import Optional, Type, Mapping
 
 from .os_basic_scan import OSScanCtx, OSBasicScanner
 from .ie_scan import IE1Scanner, IE2Scanner
+from .udp_scan import U1Scanner
 
 scanner_clses: Mapping[str, Type[OSBasicScanner]] = {
     'IE1': IE1Scanner,
     'IE2': IE2Scanner,
+    'U1': U1Scanner,
 }
 
 

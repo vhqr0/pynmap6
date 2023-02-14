@@ -26,8 +26,6 @@ class PortScanner(StatelessScanner):
                          interval=interval)
 
     def parse(self) -> List[Tuple[str, int, str]]:
-        if self.exc:
-            raise self.exc
         results = [self.parse_1(buf) for buf in self.results]
         return [result for result in results if result is not None]
 

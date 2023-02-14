@@ -44,6 +44,9 @@ class BasicScanner:
             self.done = True
             receiver.join()
 
+        if self.exc:
+            raise self.exc
+
     def sender(self):
         raise NotImplementedError
 
