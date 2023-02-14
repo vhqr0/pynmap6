@@ -85,7 +85,7 @@ class PortScanner:
 
     def receiver(self):
         sniffer = pcap.pcap(name=self.iface, promisc=False, timeout_ms=1)
-        sniffer.setfilter(f'ip6 tcp and tcp dst port {self.port}')
+        sniffer.setfilter(f'ip6 and tcp dst port {self.port}')
         sniffer.setdirection(pcap.PCAP_D_IN)
         sniffer.setnonblock()
         while not self.done:
