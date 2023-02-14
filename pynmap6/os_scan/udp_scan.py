@@ -12,7 +12,7 @@ class U1Scanner(OSBasicScanner):
     port: int
 
     filter_tpl = 'ip6 src {} and ' \
-        'icmp6[icmp6type]==icmp6-echoreply and ' \
+        'icmp6[icmp6type]==icmp6-destinationunreach and ' \
         'icmp6[icmp6code]==4'
 
     def __init__(self, ctx: OSScanCtx):
