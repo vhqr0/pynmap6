@@ -1,4 +1,3 @@
-import pprint
 import argparse
 
 import scapy.all as sp
@@ -26,4 +25,5 @@ scanner = PortScanner(targets, interval=interval)
 scanner.run()
 results = scanner.parse()
 
-pprint.pprint(results)
+for result in results:
+    print('[{}]:{}\t{}'.format(*result))
