@@ -13,7 +13,7 @@ scanner_clses: Mapping[str, Type[OSBasicScanner]] = {
 
 def os_scan(ctx: OSScanCtx) -> Mapping[str, str]:
     results: Mapping[str, str] = dict()
-    for name, scanner_cls in scanner_clses:
+    for name, scanner_cls in scanner_clses.items():
         try:
             scanner = scanner_cls(ctx)
             scanner.run()
