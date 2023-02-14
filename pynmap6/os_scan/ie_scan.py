@@ -34,7 +34,7 @@ class IE1Scanner(OSBasicScanner):
             sp.ICMPv6EchoRequest(code=9,
                                  id=self.ieid,
                                  seq=random.getrandbits(16),
-                                 data=bytes(120))
+                                 data=random.randbytes(120))
         return [(self.target, pkt)]
 
 
@@ -77,5 +77,5 @@ class IE2Scanner(OSBasicScanner):
             sp.IPv6ExtHdrHopByHop(options=[self.Pad4]) / \
             sp.ICMPv6EchoRequest(id=self.ieid,
                                  seq=random.getrandbits(16),
-                                 data=bytes(120))
+                                 data=random.randbytes(120))
         return [(self.target, pkt)]
