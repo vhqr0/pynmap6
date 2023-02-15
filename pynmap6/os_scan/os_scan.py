@@ -42,7 +42,7 @@ def os_scan(target: str,
     results: Dict[str, Optional[str]] = dict()
     if not fps:
         fps = list(scanner_clses)
-        fps.append(fps)
+        fps.append('S')
 
     ctx = OSScanCtx(target,
                     iface=iface,
