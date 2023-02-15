@@ -13,7 +13,7 @@ args = parser.parse_args()
 data = json.load(open(args.file))
 
 for name, fp_encoded in data.items():
-    print(f'--- beg: {name} ---')
+    print(f'--- beg: {name} ---\n')
     if fp_encoded:
         try:
             fp = base64.b64decode(fp_encoded)
@@ -23,4 +23,4 @@ for name, fp_encoded in data.items():
             print(f'except while parsing: {e}')
     else:
         print('None')
-    print(f'--- end: {name} ---')
+    print(f'--- end: {name} ---\n')
