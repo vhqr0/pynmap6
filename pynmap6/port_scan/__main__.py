@@ -9,12 +9,14 @@ from .target_generate import TargetGenerator, pop_ports
 
 def main():
     parser = argparse.ArgumentParser()
+    parser.add_argument('-o', '--output')
     parser.add_argument('-i', '--iface', default=str(sp.conf.iface))
     parser.add_argument('-p', '--ports', default=pop_ports)
     parser.add_argument('-I', '--interval', type=float, default=1.0)
     parser.add_argument('addrs', nargs=argparse.REMAINDER)
     args = parser.parse_args()
 
+    output = args.output
     iface = args.iface
     addrs = args.addrs
     ports = args.ports.split(',')
@@ -34,8 +36,9 @@ def main():
     scanner.run()
     results = scanner.parse()
 
+    file = open(output, 'w') if output else sys.stdout
     for result in results:
-        print('[{}]:{}\t{}'.format(*result))
+        print('[{}]:{}\t{}'.format(*result), file=file)
 
 
 if __name__ == '__main__':
