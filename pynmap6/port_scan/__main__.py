@@ -3,8 +3,8 @@ import argparse
 
 import scapy.all as sp
 
-from .port_scan import PortScanner, pop_ports
-from .target_generate import TargetGenerator
+from .port_scan import PortScanner
+from .target_generate import TargetGenerator, pop_ports
 
 
 def main():
