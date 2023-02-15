@@ -12,7 +12,7 @@ args = parser.parse_args()
 
 data = json.load(open(args.file))
 
-for name, fp_encoded in data:
+for name, fp_encoded in data.items():
     print(f'--- beg: {name} ---')
     if fp_encoded:
         try:
