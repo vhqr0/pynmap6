@@ -17,8 +17,8 @@ def os_scan(target: str,
             iface: Optional[str] = None,
             retry: int = 2,
             timewait: float = 1.0,
-            interval: float = 0.1) -> Mapping[str, str]:
-    results: Mapping[str, str] = dict()
+            interval: float = 0.1) -> Mapping[str, Optional[str]]:
+    results: Mapping[str, Optional[str]] = dict()
     ctx = OSScanCtx(target, iface, retry, timewait, interval)
     for name, scanner_cls in scanner_clses.items():
         try:
@@ -28,7 +28,7 @@ def os_scan(target: str,
             if fp:
                 results[name] = base64.b64encode(fp).decode()
             else:
-                raise ValueError('no finger print')
+                results[name] = None
         except Exception as e:
             OSBasicScanner.logger.error('except while os scanning: %s', e)
     return results

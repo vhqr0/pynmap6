@@ -1,4 +1,5 @@
 import sys
+import json
 import argparse
 
 import scapy.all as sp
@@ -30,9 +31,11 @@ def main():
                       timewait=timewait,
                       interval=interval)
 
-    file = open(output, 'w') if output else sys.stdout
-    for name, fp in results.items():
-        print('{}\t{}'.format(name, fp), file=file)
+    if output:
+        json.dump(results, open(output, 'w'))
+    else:
+        for name, fp in results.items():
+            print('{}\t{}'.format(name, fp))
 
 
 if __name__ == '__main__':
