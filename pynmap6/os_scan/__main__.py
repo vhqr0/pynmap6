@@ -36,7 +36,8 @@ def main():
                       timewait=timewait,
                       interval=interval,
                       open_port=open_port,
-                      closed_port=closed_port)
+                      closed_port=closed_port,
+                      fps=fps)
 
     if output:
         json.dump(results, open(output, 'w'))
