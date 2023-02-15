@@ -2,7 +2,7 @@ import random
 import re
 import socket
 
-from typing import Generator, Tuple, List
+from typing import Tuple, List
 
 # from nmap/portlist.cc::random_port_cheat::pop_ports
 pop_ports = '80,23,443,21,22,25,3389,110,445,139,' \

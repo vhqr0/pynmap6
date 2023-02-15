@@ -4,7 +4,7 @@ import logging
 
 import scapy.all as sp
 
-from typing import Optional, Generator, List
+from typing import Optional, List
 
 from ..basic_scan import StatelessScanner
 from .os_basic_scan import OSScanCtx
@@ -67,7 +67,7 @@ class TCPSScanner(StatelessScanner):
     def get_filter(self) -> str:
         return self.filter_tpl.format(self.port, self.target_port)
 
-    def get_pkts(self) -> Generator[sp.IPv6, None, None]:
+    def get_pkts(self) -> List[sp.IPv6]:
         pkts: List[sp.IPv6] = [
             self.s1(),
             self.s2(),
