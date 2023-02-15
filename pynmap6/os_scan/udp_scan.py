@@ -28,6 +28,6 @@ class U1Scanner(OSBasicScanner):
         for _ in range(3):
             pkt = sp.IPv6(dst=self.target) / \
                 sp.UDP(sport=self.port, dport=random.getrandbits(16)) / \
-                random.randbytes(120)
+                random.randbytes(random.randint(20, 40))
             pkts.append(pkt)
         return pkts
