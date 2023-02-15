@@ -1,10 +1,19 @@
+"""
+Links:
+
+https://nmap.org/book/osdetect.html
+https://nmap.org/book/osdetect-methods.html
+https://nmap.org/book/osdetect-ipv6-methods.html
+"""
+
 import base64
 
 from typing import Optional, Type, Mapping, Dict
 
 from .os_basic_scan import OSScanCtx, OSBasicScanner
-from .tcp_scan import (TECNScanner, T2Scanner, T3Scanner, T4Scanner, T5Scanner,
-                       T6Scanner, T7Scanner)
+from .tcp_s_scan import TCPSScaner
+from .tcp_scan import TECNScanner, T2Scanner, T3Scanner, T4Scanner, \
+    T5Scanner, T6Scanner, T7Scanner
 from .udp_scan import U1Scanner
 from .ie_scan import IE1Scanner, IE2Scanner
 
@@ -37,6 +46,22 @@ def os_scan(target: str,
                     interval=interval,
                     open_port=open_port,
                     closed_port=closed_port)
+
+    try:
+        s_scanner = TCPSScaner(ctx)
+        s_scanner.run()
+        s_results = s_scanner.parse()
+        for i in range(3):
+            for j in range(6):
+                name = f'S{j}#{i}'
+                fp = s_results[i][j]
+                if fp:
+                    results[name] = base64.b64encode(fp).decode()
+                else:
+                    results[name] = None
+    except Exception as e:
+        TCPSScaner.logger.error('except while os scanning: %s', e)
+
     for name, scanner_cls in scanner_clses.items():
         try:
             scanner = scanner_cls(ctx)

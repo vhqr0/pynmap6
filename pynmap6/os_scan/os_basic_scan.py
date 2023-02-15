@@ -45,7 +45,7 @@ class OSBasicScanner(StatefulScanner):
                          timewait=ctx.timewait,
                          interval=ctx.interval)
 
-    def parse(self) -> Optional[bytes]:  # default: use the first pkts received
+    def parse(self) -> Optional[bytes]:  # default: use the first pkt received
         if not self.results:
             return None
         pkt = sp.Ether(self.results[0])
