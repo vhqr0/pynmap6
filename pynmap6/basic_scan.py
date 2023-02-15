@@ -85,8 +85,8 @@ class StatelessScanner(BasicScanner):
         super().__init__(filter, iface, interval)
 
     def sender(self):
-        for dst, pkt in self.pkts:
-            self.send(dst, pkt)
+        for pkt in self.pkts:
+            self.send(pkt)
 
 
 class StatefulScanner(BasicScanner):
@@ -110,8 +110,8 @@ class StatefulScanner(BasicScanner):
 
     def sender(self):
         for _ in range(self.retry):
-            for dst, pkt in self.pkts:
-                self.send(dst, pkt)
+            for pkt in self.pkts:
+                self.send(pkt)
             time.sleep(self.timewait)
             if self.results:
                 break
