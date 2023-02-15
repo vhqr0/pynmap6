@@ -3,12 +3,19 @@ import base64
 from typing import Optional, Type, Mapping, Dict
 
 from .os_basic_scan import OSScanCtx, OSBasicScanner
-from .tcp_scan import TECNScanner
+from .tcp_scan import (TECNScanner, T2Scanner, T3Scanner, T4Scanner, T5Scanner,
+                       T6Scanner, T7Scanner)
 from .udp_scan import U1Scanner
 from .ie_scan import IE1Scanner, IE2Scanner
 
 scanner_clses: Mapping[str, Type[OSBasicScanner]] = {
     'TECN': TECNScanner,
+    'T2': T2Scanner,
+    'T3': T3Scanner,
+    'T4': T4Scanner,
+    'T5': T5Scanner,
+    'T6': T6Scanner,
+    'T7': T7Scanner,
     'U1': U1Scanner,
     'IE1': IE1Scanner,
     'IE2': IE2Scanner,

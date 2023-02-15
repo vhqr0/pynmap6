@@ -1,4 +1,5 @@
 import random
+import logging
 
 import scapy.all as sp
 
@@ -11,6 +12,8 @@ class TCPBaseScanner(OSBasicScanner):
     target: str
     target_port: int
     port: int
+
+    logger = logging.getLogger('tcp_basic_scanner')
 
     filter_tpl = 'ip6 and ' \
         'tcp dst port {} and ' \
@@ -60,4 +63,76 @@ class TECNScanner(TCPOpenScanner):
                        ('NOP', None),
                        ('NOP', None),
                    ])
+        return [pkt]
+
+
+class T2Scanner(TCPOpenScanner):
+
+    def get_pkts(self) -> List[sp.IPv6]:
+        pkt = sp.IPv6(dst=self.target) / \
+            sp.TCP(sport=self.port,
+                   dport=self.target_port,
+                   seq=random.getrandbits(32),
+                   flags='',
+                   window=128)
+        return [pkt]
+
+
+class T3Scanner(TCPOpenScanner):
+
+    def get_pkts(self) -> List[sp.IPv6]:
+        pkt = sp.IPv6(dst=self.target) / \
+            sp.TCP(sport=self.port,
+                   dport=self.target_port,
+                   seq=random.getrandbits(32),
+                   flags='FSPU',
+                   window=256)
+        return [pkt]
+
+
+class T4Scanner(TCPOpenScanner):
+
+    def get_pkts(self) -> List[sp.IPv6]:
+        pkt = sp.IPv6(dst=self.target) / \
+            sp.TCP(sport=self.port,
+                   dport=self.target_port,
+                   seq=random.getrandbits(32),
+                   flags='A',
+                   window=1024)
+        return [pkt]
+
+
+class T5Scanner(TCPClosedScanner):
+
+    def get_pkts(self) -> List[sp.IPv6]:
+        pkt = sp.IPv6(dst=self.target) / \
+            sp.TCP(sport=self.port,
+                   dport=self.target_port,
+                   seq=random.getrandbits(32),
+                   flags='S',
+                   window=31337)
+        return [pkt]
+
+
+class T6Scanner(TCPClosedScanner):
+
+    def get_pkts(self) -> List[sp.IPv6]:
+        pkt = sp.IPv6(dst=self.target) / \
+            sp.TCP(sport=self.port,
+                   dport=self.target_port,
+                   seq=random.getrandbits(32),
+                   flags='A',
+                   window=32768)
+        return [pkt]
+
+
+class T7Scanner(TCPClosedScanner):
+
+    def get_pkts(self) -> List[sp.IPv6]:
+        pkt = sp.IPv6(dst=self.target) / \
+            sp.TCP(sport=self.port,
+                   dport=self.target_port,
+                   seq=random.getrandbits(32),
+                   flags='FPU',
+                   window=65535)
         return [pkt]
