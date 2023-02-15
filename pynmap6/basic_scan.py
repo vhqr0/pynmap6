@@ -26,6 +26,7 @@ class BasicScanner:
                  iface: Optional[str] = None,
                  interval: float = 0.1):
         self.filter = filter
+        self.pkts = pkts
         self.iface = iface or str(sp.conf.iface)
         self.interval = interval
         self.done = False
