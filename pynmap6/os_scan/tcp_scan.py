@@ -35,7 +35,7 @@ class TECNScanner(OSBasicScanner):
         return self.filter_tpl.format(self.port, self.open_port)
 
     def get_pkts(self) -> List[sp.IPv6]:
-        pkt = sp.IPv6(dst=self.port) / \
+        pkt = sp.IPv6(dst=self.target) / \
             sp.TCP(sport=self.port,
                    dport=self.open_port,
                    seq=random.getrandbits(32),
