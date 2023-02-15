@@ -52,7 +52,7 @@ class TCPSScanner(StatelessScanner):
                 pkt = sp.Ether(result)
                 ippkt = pkt[sp.IPv6]
                 tcppkt = ippkt[sp.TCP]
-                seq = tcppkt.seq
+                seq = tcppkt.ack - 1
                 idx = seq - self.initial_seq - 1
                 if 0 <= idx < 6:
                     results[i][idx] = sp.raw(ippkt)
