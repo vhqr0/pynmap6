@@ -38,11 +38,13 @@ def os_scan(target: str,
             interval: float = 0.1,
             open_port: Optional[int] = None,
             closed_port: Optional[int] = None,
-            fps: List[str] = []) -> Mapping[str, Optional[str]]:
+            finger_prints: List[str] = []) -> Mapping[str, Optional[str]]:
+
     results: Dict[str, Optional[str]] = dict()
-    if not fps:
-        fps = list(scanner_clses)
-        fps.append('S')
+
+    if not finger_prints:
+        finger_prints = list(scanner_clses)
+        finger_prints.append('S')
 
     ctx = OSScanCtx(target,
                     iface=iface,
@@ -52,7 +54,7 @@ def os_scan(target: str,
                     open_port=open_port,
                     closed_port=closed_port)
 
-    if 'S' in fps:
+    if 'S' in finger_prints:
         try:
             s_scanner = TCPSScanner(ctx)
             s_scanner.run()
@@ -69,7 +71,7 @@ def os_scan(target: str,
             TCPSScanner.logger.error('except while os scanning: %s', e)
 
     for name, scanner_cls in scanner_clses.items():
-        if name not in fps:
+        if name not in finger_prints:
             continue
         try:
             scanner = scanner_cls(ctx)
