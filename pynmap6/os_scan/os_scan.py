@@ -37,8 +37,13 @@ def os_scan(target: str,
             timewait: float = 1.0,
             interval: float = 0.1,
             open_port: Optional[int] = None,
-            closed_port: Optional[int] = None) -> Mapping[str, Optional[str]]:
+            closed_port: Optional[int] = None,
+            fps: List[str] = []) -> Mapping[str, Optional[str]]:
     results: Dict[str, Optional[str]] = dict()
+    if not fps:
+        fps = list(scanner_clses)
+        fps.append(fps)
+
     ctx = OSScanCtx(target,
                     iface=iface,
                     retry=retry,
@@ -47,22 +52,25 @@ def os_scan(target: str,
                     open_port=open_port,
                     closed_port=closed_port)
 
-    try:
-        s_scanner = TCPSScanner(ctx)
-        s_scanner.run()
-        s_results = s_scanner.parse()
-        for i in range(3):
-            for j in range(6):
-                name = f'S{j+1}#{i+1}'
-                fp = s_results[i][j]
-                if fp:
-                    results[name] = base64.b64encode(fp).decode()
-                else:
-                    results[name] = None
-    except Exception as e:
-        TCPSScanner.logger.error('except while os scanning: %s', e)
+    if 'S' in fps:
+        try:
+            s_scanner = TCPSScanner(ctx)
+            s_scanner.run()
+            s_results = s_scanner.parse()
+            for i in range(3):
+                for j in range(6):
+                    name = f'S{j+1}#{i+1}'
+                    fp = s_results[i][j]
+                    if fp:
+                        results[name] = base64.b64encode(fp).decode()
+                    else:
+                        results[name] = None
+        except Exception as e:
+            TCPSScanner.logger.error('except while os scanning: %s', e)
 
     for name, scanner_cls in scanner_clses.items():
+        if name not in fps:
+            continue
         try:
             scanner = scanner_cls(ctx)
             scanner.run()

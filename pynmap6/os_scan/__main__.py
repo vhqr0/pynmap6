@@ -9,6 +9,7 @@ from .os_scan import os_scan
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('-o', '--output')
+    parser.add_argument('-f', '--fps', default='')
     parser.add_argument('-i', '--iface', default=str(sp.conf.iface))
     parser.add_argument('-r', '--retry', type=int, default=2)
     parser.add_argument('-T', '--timewait', type=float, default=1.0)
@@ -19,6 +20,7 @@ def main():
     args = parser.parse_args()
 
     output = args.output
+    fps = [fp.upper() for fp in args.fps.split(',')]
     iface = args.iface
     target = args.target
     retry = args.retry
