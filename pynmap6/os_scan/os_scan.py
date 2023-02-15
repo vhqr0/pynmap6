@@ -8,7 +8,7 @@ https://nmap.org/book/osdetect-ipv6-methods.html
 
 import base64
 
-from typing import Optional, Type, Mapping, Dict
+from typing import Optional, Type, Mapping, Dict, List
 
 from .os_basic_scan import OSScanCtx, OSBasicScanner
 from .tcp_s_scan import TCPSScanner
