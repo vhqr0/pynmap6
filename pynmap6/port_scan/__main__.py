@@ -40,8 +40,8 @@ def main():
     if output:
         json.dump(results, open(output, 'w'))
     else:
-        for result in results:
-            print('[{}]:{}\t{}'.format(*result))
+        for addr, port, state in results:
+            print(f'[{addr}]:{port}\t{state}')
 
 
 if __name__ == '__main__':
