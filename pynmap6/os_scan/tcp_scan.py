@@ -46,7 +46,7 @@ class TECNScanner(OSBasicScanner):
                        ('WScale', 10),
                        ('NOP', None),
                        ('MSS', 1460),
-                       ('SAckOK', None),
+                       ('SAckOK', b''),
                        ('NOP', None),
                        ('NOP', None),
                    ])
