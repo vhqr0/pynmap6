@@ -2,7 +2,7 @@ import random
 
 import scapy.all as sp
 
-from typing import Optional, Tuple, List
+from typing import Optional, List
 
 from .os_basic_scan import OSScanCtx, OSBasicScanner
 

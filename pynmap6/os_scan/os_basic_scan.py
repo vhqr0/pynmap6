@@ -2,7 +2,7 @@ import logging
 
 import scapy.all as sp
 
-from typing import Optional, Tuple, List
+from typing import Optional, List
 
 from ..basic_scan import StatefulScanner
 
