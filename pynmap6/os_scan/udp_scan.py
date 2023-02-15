@@ -2,7 +2,7 @@ import random
 
 import scapy.all as sp
 
-from typing import Optional, List
+from typing import List
 
 from .os_basic_scan import OSScanCtx, OSBasicScanner
 
@@ -19,13 +19,6 @@ class U1Scanner(OSBasicScanner):
         self.target = ctx.target
         self.port = random.getrandbits(16)
         super().__init__(ctx)
-
-    def parse(self) -> Optional[bytes]:
-        if not self.results:
-            return None
-        pkt = sp.Ether(self.results[0])
-        ippkt = pkt[sp.IPv6]
-        return sp.raw(ippkt)
 
     def get_filter(self) -> str:
         return self.filter_tpl.format(self.target)

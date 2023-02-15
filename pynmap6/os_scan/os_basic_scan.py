@@ -45,8 +45,12 @@ class OSBasicScanner(StatefulScanner):
                          timewait=ctx.timewait,
                          interval=ctx.interval)
 
-    def parse(self) -> Optional[bytes]:
-        raise NotImplementedError
+    def parse(self) -> Optional[bytes]:  # default: use the first pkts received
+        if not self.results:
+            return None
+        pkt = sp.Ether(self.results[0])
+        ippkt = pkt[sp.IPv6]
+        return sp.raw(ippkt)
 
     def get_filter(self) -> str:
         raise NotImplementedError

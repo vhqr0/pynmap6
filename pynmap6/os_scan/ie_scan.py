@@ -2,7 +2,7 @@ import random
 
 import scapy.all as sp
 
-from typing import Optional, List
+from typing import List
 
 from .os_basic_scan import OSScanCtx, OSBasicScanner
 
@@ -21,13 +21,6 @@ class IE1Scanner(OSBasicScanner):
         self.target = ctx.target
         self.ieid = random.getrandbits(16)
         super().__init__(ctx)
-
-    def parse(self) -> Optional[bytes]:
-        if not self.results:
-            return None
-        pkt = sp.Ether(self.results[0])
-        ippkt = pkt[sp.IPv6]
-        return sp.raw(ippkt)
 
     def get_filter(self) -> str:
         return self.filter_tpl.format(self.target, self.ieid)
@@ -58,13 +51,9 @@ class IE2Scanner(OSBasicScanner):
         self.ieid = random.getrandbits(16)
         super().__init__(ctx)
 
-    def parse(self) -> Optional[bytes]:
-        # TODO: deeper analysis
-        if not self.results:
-            return None
-        pkt = sp.Ether(self.results[0])
-        ippkt = pkt[sp.IPv6]
-        return sp.raw(ippkt)
+    # TODO: deeper analysis
+    # def parse(self) -> Optional[bytes]:
+    #     pass
 
     def get_filter(self) -> str:
         return self.filter_tpl.format(self.target, self.ieid)
