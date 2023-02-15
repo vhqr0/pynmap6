@@ -35,7 +35,7 @@ def main():
         json.dump(results, open(output, 'w'))
     else:
         for name, fp in results.items():
-            print('{}\t{}'.format(name, fp))
+            print(f'{name}\t{fp}')
 
 
 if __name__ == '__main__':

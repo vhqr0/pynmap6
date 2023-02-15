@@ -1,4 +1,5 @@
 import sys
+import json
 import argparse
 
 import scapy.all as sp
@@ -36,9 +37,11 @@ def main():
     scanner.run()
     results = scanner.parse()
 
-    file = open(output, 'w') if output else sys.stdout
-    for result in results:
-        print('[{}]:{}\t{}'.format(*result), file=file)
+    if output:
+        json.dump(results, open(output, 'w'))
+    else:
+        for result in results:
+            print('[{}]:{}\t{}'.format(*result))
 
 
 if __name__ == '__main__':
