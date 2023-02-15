@@ -31,7 +31,7 @@ class IE1Scanner(OSBasicScanner):
 
     def get_pkts(self) -> List[Tuple[str, sp.Packet]]:
         pkt = sp.IPv6(dst=self.target) / \
-            sp.ICMPv6EchoRequest(code=9,
+            sp.ICMPv6EchoRequest(code=128 + random.getrandbits(7),
                                  id=self.ieid,
                                  seq=random.getrandbits(16),
                                  data=random.randbytes(120))

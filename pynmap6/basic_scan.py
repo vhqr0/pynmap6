@@ -44,7 +44,7 @@ class BasicScanner:
             self.done = True
             receiver.join()
 
-        if self.exc:
+        if self.exc is not None:
             raise self.exc
 
     def sender(self):

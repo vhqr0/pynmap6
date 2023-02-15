@@ -5,7 +5,7 @@ import scapy.all as sp
 
 from typing import Optional, Generator, Tuple, List
 
-from .basic_scan import StatelessScanner
+from ..basic_scan import StatelessScanner
 
 
 class PortScanner(StatelessScanner):

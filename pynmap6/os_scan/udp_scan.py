@@ -1,8 +1,8 @@
 import random
 
-from typing import Optional, Tuple, List
-
 import scapy.all as sp
+
+from typing import Optional, Tuple, List
 
 from .os_basic_scan import OSScanCtx, OSBasicScanner
 

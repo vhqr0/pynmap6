@@ -4,6 +4,10 @@ import socket
 
 from typing import Generator, Tuple, List
 
+# from nmap/portlist.cc::random_port_cheat::pop_ports
+pop_ports = '80,23,443,21,22,25,3389,110,445,139,' \
+    '143,53,135,3306,8080,1723,111,995,993,5900,1025,587,8888,199,1720'
+
 
 class AddrGenerator:
     addrs: List[str]
