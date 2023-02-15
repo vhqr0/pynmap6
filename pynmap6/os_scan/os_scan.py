@@ -11,7 +11,7 @@ import base64
 from typing import Optional, Type, Mapping, Dict
 
 from .os_basic_scan import OSScanCtx, OSBasicScanner
-from .tcp_s_scan import TCPSScaner
+from .tcp_s_scan import TCPSScanner
 from .tcp_scan import TECNScanner, T2Scanner, T3Scanner, T4Scanner, \
     T5Scanner, T6Scanner, T7Scanner
 from .udp_scan import U1Scanner
@@ -48,7 +48,7 @@ def os_scan(target: str,
                     closed_port=closed_port)
 
     try:
-        s_scanner = TCPSScaner(ctx)
+        s_scanner = TCPSScanner(ctx)
         s_scanner.run()
         s_results = s_scanner.parse()
         for i in range(3):
@@ -60,7 +60,7 @@ def os_scan(target: str,
                 else:
                     results[name] = None
     except Exception as e:
-        TCPSScaner.logger.error('except while os scanning: %s', e)
+        TCPSScanner.logger.error('except while os scanning: %s', e)
 
     for name, scanner_cls in scanner_clses.items():
         try:

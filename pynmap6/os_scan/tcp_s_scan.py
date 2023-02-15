@@ -10,7 +10,7 @@ from ..basic_scan import StatelessScanner
 from .os_basic_scan import OSScanCtx
 
 
-class TCPSScaner(StatelessScanner):
+class TCPSScanner(StatelessScanner):
     target: str
     target_port: int
     port: int
