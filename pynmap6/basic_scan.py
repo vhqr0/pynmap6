@@ -39,7 +39,7 @@ class BasicScanner:
             self.sender()
         except Exception as e:
             self.exc = e
-            self.logger.error('sender except: %s', e)
+            self.logger.error('except while sending: %s', e)
         finally:
             self.done = True
             receiver.join()

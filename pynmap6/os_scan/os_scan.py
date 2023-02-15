@@ -30,5 +30,5 @@ def os_scan(target: str,
             else:
                 raise ValueError('no finger print')
         except Exception as e:
-            OSBasicScanner.logger.error('except while os scanning %s', e)
+            OSBasicScanner.logger.error('except while os scanning: %s', e)
     return results

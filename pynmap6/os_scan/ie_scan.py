@@ -6,6 +6,8 @@ from typing import Optional, Tuple, List
 
 from .os_basic_scan import OSScanCtx, OSBasicScanner
 
+Pad4 = sp.PadN(optdata=b'\x00\x00\x00\x00')
+
 
 class IE1Scanner(OSBasicScanner):
     target: str
@@ -31,6 +33,7 @@ class IE1Scanner(OSBasicScanner):
 
     def get_pkts(self) -> List[Tuple[str, sp.Packet]]:
         pkt = sp.IPv6(dst=self.target) / \
+            sp.IPv6ExtHdrHopByHop(options=[Pad4]) / \
             sp.ICMPv6EchoRequest(code=128 + random.getrandbits(7),
                                  id=self.ieid,
                                  seq=random.getrandbits(16),
@@ -48,8 +51,6 @@ class IE2Scanner(OSBasicScanner):
         ' (icmp6[icmp6type]==icmp6-echoreply and icmp6[4:2]=={}) or ' \
         ' icmp6[icmp6type]==icmp6-parameterproblem' \
         ')'
-
-    Pad4 = sp.PadN(optdata=b'\x00\x00\x00\x00')
 
     def __init__(self, ctx: OSScanCtx):
         self.target = ctx.target
@@ -71,10 +72,10 @@ class IE2Scanner(OSBasicScanner):
 
     def get_pkts(self) -> List[Tuple[str, sp.Packet]]:
         pkt = sp.IPv6(dst=self.target) / \
-            sp.IPv6ExtHdrHopByHop(options=[self.Pad4]) / \
-            sp.IPv6ExtHdrDestOpt(options=[self.Pad4]) / \
+            sp.IPv6ExtHdrHopByHop(options=[Pad4]) / \
+            sp.IPv6ExtHdrDestOpt(options=[Pad4]) / \
             sp.IPv6ExtHdrRouting() / \
-            sp.IPv6ExtHdrHopByHop(options=[self.Pad4]) / \
+            sp.IPv6ExtHdrHopByHop(options=[Pad4]) / \
             sp.ICMPv6EchoRequest(id=self.ieid,
                                  seq=random.getrandbits(16),
                                  data=random.randbytes(120))
