@@ -36,7 +36,7 @@ class PortScanner(StatelessScanner):
             tcppkt = ippkt[sp.TCP]
             flags = tcppkt.flags
             if 'R' in flags:
-                return ippkt.src, tcppkt.sport, 'close'
+                return ippkt.src, tcppkt.sport, 'closed'
             if 'S' in flags and 'A' in flags:
                 return ippkt.src, tcppkt.sport, 'open'
             raise ValueError('invalid tcp flags')

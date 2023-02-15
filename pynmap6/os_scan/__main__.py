@@ -13,6 +13,8 @@ def main():
     parser.add_argument('-r', '--retry', type=int, default=2)
     parser.add_argument('-T', '--timewait', type=float, default=1.0)
     parser.add_argument('-I', '--interval', type=float, default=0.1)
+    parser.add_argument('-O', '--open-port', type=int)
+    parser.add_argument('-C', '--closed-port', type=int)
     parser.add_argument('target')
     args = parser.parse_args()
 
@@ -22,13 +24,17 @@ def main():
     retry = args.retry
     timewait = args.timewait
     interval = args.interval
+    open_port = args.open_port
+    closed_port = args.closed_port
 
     sp.conf.iface = iface
 
     results = os_scan(target,
                       retry=retry,
                       timewait=timewait,
-                      interval=interval)
+                      interval=interval,
+                      open_port=open_port,
+                      closed_port=closed_port)
 
     if output:
         json.dump(results, open(output, 'w'))

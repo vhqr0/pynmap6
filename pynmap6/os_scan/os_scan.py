@@ -3,13 +3,15 @@ import base64
 from typing import Optional, Type, Mapping, Dict
 
 from .os_basic_scan import OSScanCtx, OSBasicScanner
-from .ie_scan import IE1Scanner, IE2Scanner
+from .tcp_scan import TECNScanner
 from .udp_scan import U1Scanner
+from .ie_scan import IE1Scanner, IE2Scanner
 
 scanner_clses: Mapping[str, Type[OSBasicScanner]] = {
+    'TECN': TECNScanner,
+    'U1': U1Scanner,
     'IE1': IE1Scanner,
     'IE2': IE2Scanner,
-    'U1': U1Scanner,
 }
 
 
@@ -17,7 +19,9 @@ def os_scan(target: str,
             iface: Optional[str] = None,
             retry: int = 2,
             timewait: float = 1.0,
-            interval: float = 0.1) -> Mapping[str, Optional[str]]:
+            interval: float = 0.1,
+            open_port: Optional[int] = None,
+            closed_port: Optional[int] = None) -> Mapping[str, Optional[str]]:
     results: Dict[str, Optional[str]] = dict()
     ctx = OSScanCtx(target, iface, retry, timewait, interval)
     for name, scanner_cls in scanner_clses.items():
