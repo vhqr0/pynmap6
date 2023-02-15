@@ -47,7 +47,7 @@ class TECNScanner(OSBasicScanner):
                        ('NOP', None),
                        ('MSS', 1460),
                        ('SAckOK', None),
-                       ('NOP', None)
-                       ('NOP', None)
+                       ('NOP', None),
+                       ('NOP', None),
                    ])
         return [pkt]
