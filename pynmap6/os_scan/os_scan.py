@@ -23,7 +23,13 @@ def os_scan(target: str,
             open_port: Optional[int] = None,
             closed_port: Optional[int] = None) -> Mapping[str, Optional[str]]:
     results: Dict[str, Optional[str]] = dict()
-    ctx = OSScanCtx(target, iface, retry, timewait, interval)
+    ctx = OSScanCtx(target,
+                    iface=iface,
+                    retry=retry,
+                    timewait=timewait,
+                    interval=interval,
+                    open_port=open_port,
+                    closed_port=closed_port)
     for name, scanner_cls in scanner_clses.items():
         try:
             scanner = scanner_cls(ctx)
