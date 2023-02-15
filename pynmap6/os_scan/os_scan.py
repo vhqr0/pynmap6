@@ -1,6 +1,6 @@
 import base64
 
-from typing import Optional, Type, Mapping
+from typing import Optional, Type, Mapping, Dict
 
 from .os_basic_scan import OSScanCtx, OSBasicScanner
 from .ie_scan import IE1Scanner, IE2Scanner
@@ -18,7 +18,7 @@ def os_scan(target: str,
             retry: int = 2,
             timewait: float = 1.0,
             interval: float = 0.1) -> Mapping[str, Optional[str]]:
-    results: Mapping[str, Optional[str]] = dict()
+    results: Dict[str, Optional[str]] = dict()
     ctx = OSScanCtx(target, iface, retry, timewait, interval)
     for name, scanner_cls in scanner_clses.items():
         try:

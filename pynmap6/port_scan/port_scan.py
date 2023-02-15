@@ -29,7 +29,7 @@ class PortScanner(StatelessScanner):
         results = [self.parse_1(buf) for buf in self.results]
         return [result for result in results if result is not None]
 
-    def parse_1(self, buf) -> Tuple[str, int, str]:
+    def parse_1(self, buf) -> Optional[Tuple[str, int, str]]:
         try:
             pkt = sp.Ether(buf)
             ippkt = pkt[sp.IPv6]
@@ -42,14 +42,15 @@ class PortScanner(StatelessScanner):
             raise ValueError('invalid tcp flags')
         except Exception as e:
             self.logger.warning('except while parsing: %s', e)
+        return None
 
     def get_filter(self) -> str:
         return f'ip6 and tcp dst port {self.port}'
 
-    def get_pkts(self) -> Generator[Tuple[str, sp.Packet], None, None]:
+    def get_pkts(self) -> Generator[sp.IPv6, None, None]:
         return (self.get_pkt(target) for target in self.targets)
 
-    def get_pkt(self, target: Tuple[str, int]) -> Tuple[str, sp.Packet]:
+    def get_pkt(self, target: Tuple[str, int]) -> sp.IPv6:
         pkt = sp.IPv6(dst=target[0]) / \
             sp.TCP(sport=self.port,
                    dport=target[1],
@@ -57,4 +58,4 @@ class PortScanner(StatelessScanner):
                    flags='S',
                    window=1024,
                    options=[('MSS', 1460)])
-        return target[0], pkt
+        return pkt

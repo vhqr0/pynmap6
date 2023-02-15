@@ -45,5 +45,5 @@ class OSBasicScanner(StatefulScanner):
     def get_filter(self) -> str:
         raise NotImplementedError
 
-    def get_pkts(self) -> List[Tuple[str, sp.Packet]]:
+    def get_pkts(self) -> List[sp.IPv6]:
         raise NotImplementedError

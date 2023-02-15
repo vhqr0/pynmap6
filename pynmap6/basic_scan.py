@@ -6,7 +6,7 @@ import logging
 import pcap
 import scapy.all as sp
 
-from typing import Optional, Generator, Tuple, List
+from typing import Optional, Generator, List
 
 
 class BasicScanner:
@@ -50,7 +50,8 @@ class BasicScanner:
     def sender(self):
         raise NotImplementedError
 
-    def send(self, dst: str, pkt: sp.Packet):
+    def send(self, pkt: sp.IPv6):
+        dst = pkt.dst
         if sp.conf.route6.route(dst)[0] != self.iface:
             self.logger.warning('dst to other iface: %s', dst)
             return
@@ -71,13 +72,13 @@ class BasicScanner:
 
 
 class StatelessScanner(BasicScanner):
-    pkts: Generator[Tuple[str, sp.Packet], None, None]
+    pkts: Generator[sp.IPv6, None, None]
 
     logger = logging.getLogger('stateless_scanner')
 
     def __init__(self,
                  filter: str,
-                 pkts: Generator[Tuple[str, sp.Ether], None, None],
+                 pkts: Generator[sp.IPv6, None, None],
                  iface: Optional[str] = None,
                  interval: float = 1.0):
         self.pkts = pkts
@@ -89,7 +90,7 @@ class StatelessScanner(BasicScanner):
 
 
 class StatefulScanner(BasicScanner):
-    pkts: List[Tuple[str, sp.Packet]]
+    pkts: List[sp.IPv6]
     retry: int
     timewait: float
 
@@ -97,7 +98,7 @@ class StatefulScanner(BasicScanner):
 
     def __init__(self,
                  filter: str,
-                 pkts: List[Tuple[str, sp.Packet]],
+                 pkts: List[sp.IPv6],
                  iface: Optional[str] = None,
                  retry: int = 2,
                  timewait: float = 1.0,

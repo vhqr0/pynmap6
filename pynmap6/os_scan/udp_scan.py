@@ -21,19 +21,20 @@ class U1Scanner(OSBasicScanner):
         super().__init__(ctx)
 
     def parse(self) -> Optional[bytes]:
-        if self.results:
-            pkt = sp.Ether(self.results[0])
-            ippkt = pkt[sp.IPv6]
-            return sp.raw(ippkt)
+        if not self.results:
+            return None
+        pkt = sp.Ether(self.results[0])
+        ippkt = pkt[sp.IPv6]
+        return sp.raw(ippkt)
 
     def get_filter(self) -> str:
         return self.filter_tpl.format(self.target)
 
-    def get_pkts(self) -> List[Tuple[str, sp.Packet]]:
+    def get_pkts(self) -> List[sp.IPv6]:
         pkts = []
         for _ in range(3):
             pkt = sp.IPv6(dst=self.target) / \
                 sp.UDP(sport=self.port, dport=random.getrandbits(16)) / \
                 random.randbytes(120)
-            pkts.append((self.target, pkt))
+            pkts.append(pkt)
         return pkts
