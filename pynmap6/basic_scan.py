@@ -6,11 +6,12 @@ import logging
 import pcap
 import scapy.all as sp
 
-from typing import Optional, Generator, List
+from typing import Optional, List
 
 
 class BasicScanner:
     filter: str
+    pkts: List[sp.IPv6]
     iface: str
     interval: float
     done: bool
@@ -21,11 +22,15 @@ class BasicScanner:
 
     def __init__(self,
                  filter: str,
+                 pkts: List[sp.IPv6],
                  iface: Optional[str] = None,
                  interval: float = 0.1):
         self.filter = filter
         self.iface = iface or str(sp.conf.iface)
         self.interval = interval
+        self.done = False
+        self.exc = None
+        self.results = []
 
     def run(self):
         self.done = False
@@ -72,17 +77,17 @@ class BasicScanner:
 
 
 class StatelessScanner(BasicScanner):
-    pkts: Generator[sp.IPv6, None, None]
-
     logger = logging.getLogger('stateless_scanner')
 
     def __init__(self,
                  filter: str,
-                 pkts: Generator[sp.IPv6, None, None],
+                 pkts: List[sp.IPv6],
                  iface: Optional[str] = None,
                  interval: float = 1.0):
-        self.pkts = pkts
-        super().__init__(filter, iface, interval)
+        super().__init__(filter=filter,
+                         pkts=pkts,
+                         iface=iface,
+                         interval=interval)
 
     def sender(self):
         for pkt in self.pkts:
@@ -90,7 +95,6 @@ class StatelessScanner(BasicScanner):
 
 
 class StatefulScanner(BasicScanner):
-    pkts: List[sp.IPv6]
     retry: int
     timewait: float
 
@@ -103,10 +107,12 @@ class StatefulScanner(BasicScanner):
                  retry: int = 2,
                  timewait: float = 1.0,
                  interval: float = 0.1):
-        self.pkts = pkts
         self.retry = retry
         self.timewait = timewait
-        super().__init__(filter, iface, interval)
+        super().__init__(filter=filter,
+                         pkts=pkts,
+                         iface=iface,
+                         interval=interval)
 
     def sender(self):
         for _ in range(self.retry):

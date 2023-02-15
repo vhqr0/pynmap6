@@ -60,8 +60,6 @@ class TCPSScaner(StatelessScanner):
 
     def run(self):  # force run 3 times
         for i in range(3):
-            if i != 0:  # refresh pkts
-                self.pkts = self.get_pkts()
             super().run()
             time.sleep(self.timewait)
             self.s_results[i] = self.results
@@ -70,14 +68,15 @@ class TCPSScaner(StatelessScanner):
         return self.filter_tpl.format(self.port, self.target_port)
 
     def get_pkts(self) -> Generator[sp.IPv6, None, None]:
-        pkts: List[sp.IPv6] = []
-        pkts.append(self.s1())
-        pkts.append(self.s2())
-        pkts.append(self.s3())
-        pkts.append(self.s4())
-        pkts.append(self.s5())
-        pkts.append(self.s6())
-        return (pkt for pkt in pkts)
+        pkts: List[sp.IPv6] = [
+            self.s1(),
+            self.s2(),
+            self.s3(),
+            self.s4(),
+            self.s5(),
+            self.s6(),
+        ]
+        return pkts
 
     def s1(self) -> sp.IPv6:
         pkt = sp.IPv6(dst=self.target) / \

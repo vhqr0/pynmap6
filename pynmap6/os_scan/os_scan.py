@@ -53,7 +53,7 @@ def os_scan(target: str,
         s_results = s_scanner.parse()
         for i in range(3):
             for j in range(6):
-                name = f'S{j}#{i}'
+                name = f'S{j+1}#{i+1}'
                 fp = s_results[i][j]
                 if fp:
                     results[name] = base64.b64encode(fp).decode()

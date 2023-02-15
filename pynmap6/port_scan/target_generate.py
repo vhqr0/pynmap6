@@ -67,5 +67,5 @@ class TargetGenerator:
         self.addrs = AddrGenerator(addrs).addrs
         self.ports = PortGenerator(ports).ports
 
-    def get_targets(self) -> Generator[Tuple[str, int], None, None]:
-        return ((addr, port) for addr in self.addrs for port in self.ports)
+    def get_targets(self) -> List[Tuple[str, int]]:
+        return [(addr, port) for addr in self.addrs for port in self.ports]
